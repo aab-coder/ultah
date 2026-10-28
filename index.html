@@ -966,11 +966,15 @@ document.getElementById('enterBtn').addEventListener('click', () => {
 });
 
 /* =========================================================
-   MUSIC PLAYER — OTOMATIS DARI FOLDER "lagu" (via PHP)
+   MUSIC PLAYER — daftar lagu dari lagu/playlist.json
    ---------------------------------------------------------
-   Web memanggil lagu/list.php → PHP scan folder "lagu/"
-   dan kembalikan daftar file. Tidak ada daftar manual,
-   tidak ada batas jumlah. Tambah lagu = tinggal taruh file.
+   Edit file "lagu/playlist.json" setiap tambah lagu.
+   Contoh isi playlist.json:
+   [
+     "lagu/Lagu A.mp3",
+     "lagu/Lagu B.mp3",
+     "lagu/Lagu C.mp3"
+   ]
 ========================================================= */
 const audio = new Audio();
 audio.volume = 0.7;
@@ -996,25 +1000,24 @@ function getSongTitle(filePath) {
 }
 
 async function loadPlaylist() {
-  let files = [];
   try {
-    const res = await fetch('lagu/list.php', { cache: 'no-store' });
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        files = data;
-        console.log('✅ Lagu otomatis dari folder:', files.length, 'file');
-      }
+    const res = await fetch('lagu/playlist.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('playlist.json tidak ditemukan');
+    const data = await res.json();
+    if (Array.isArray(data) && data.length > 0) {
+      playlist = data.map(f => ({ title: getSongTitle(f), file: f }));
+      console.log('✅ Playlist dimuat:', playlist.length, 'lagu');
     }
   } catch (err) {
-    console.warn('Gagal baca lagu/list.php:', err);
+    console.warn('Gagal memuat playlist.json:', err);
+    songTitleEl.textContent = 'playlist.json tidak ditemukan';
+    songCounterEl.textContent = '0 / 0';
   }
-  playlist = files.map(f => ({ title: getSongTitle(f), file: f }));
 }
 
 function updateUI() {
   if (playlist.length === 0) {
-    songTitleEl.textContent = 'Tidak ada lagu di folder';
+    songTitleEl.textContent = 'Tidak ada lagu';
     songCounterEl.textContent = '0 / 0';
     return;
   }
@@ -1038,7 +1041,7 @@ function startMusic() {
   musicStarted = true;
   if (playlist.length > 0) playSong(0);
   else {
-    songTitleEl.textContent = 'Tidak ada lagu di folder';
+    songTitleEl.textContent = 'Tidak ada lagu';
     songCounterEl.textContent = '0 / 0';
   }
 }
@@ -1084,7 +1087,7 @@ document.addEventListener('keydown', e => {
   else if (e.key === ' ') { e.preventDefault(); playPauseBtn.click(); }
 });
 
-// Muat playlist dari PHP saat halaman dibuka
+// Muat playlist saat halaman dibuka
 loadPlaylist().then(() => updateUI());
 
 /* ================= PHOTO DATA ================= */
