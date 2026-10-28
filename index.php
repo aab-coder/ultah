@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday - 6 November 2011</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #0a0a0a;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* ============ PIN SCREEN ============ */
+  #pinScreen {
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, #1a0000, #000);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.8s ease;
+  }
+
+  #pinScreen .lock-icon {
+    font-size: 60px;
+    margin-bottom: 20px;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px #ff0000); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 25px #ff0000); }
+  }
+
+  #pinScreen h2 {
+    color: #ff2d2d;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 18px;
+  }
+
+  #pinScreen p.hint {
+    color: #888;
+    margin-bottom: 25px;
+    font-size: 13px;
+  }
+
+  .pin-input-wrap {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+
+  .pin-box {
+    width: 60px;
+    height: 70px;
+    font-size: 32px;
+    text-align: center;
+    background: #111;
+    border: 2px solid #ff2d2d;
+    border-radius: 12px;
+    color: #fff;
+    outline: none;
+    transition: all 0.3s;
+  }
+
+  .pin-box:focus {
+    box-shadow: 0 0 20px #ff2d2d;
+    border-color: #fff;
+  }
+
+  #pinBtn {
+    padding: 14px 50px;
+    background: linear-gradient(135deg, #ff2d2d, #8b0000);
+    border: none;
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 0 20px rgba(255,45,45,0.4);
+  }
+
+  #pinBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 35px rgba(255,45,45,0.8);
+  }
+
+  #pinError {
+    color: #ff5555;
+    margin-top: 15px;
+    height: 20px;
+    font-size: 14px;
+    animation: shake 0.4s;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
+
+  /* ============ OPENING / SPLASH SCREEN ============ */
+  #openingScreen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 999;
+    overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatUp linear forwards;
+  }
+
+  @keyframes floatUp {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-110vh) rotate(720deg); opacity: 0; }
+  }
+
+  .firework {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid;
+    opacity: 0;
+    animation: explode 2.5s ease-out infinite;
+  }
+
+  @keyframes explode {
+    0% { width: 0; height: 0; opacity: 1; border-width: 8px; }
+    100% { width: 400px; height: 400px; opacity: 0; border-width: 0px; }
+  }
+
+  .opening-content {
+    text-align: center;
+    z-index: 5;
+    padding: 20px;
+  }
+
+  .opening-content .big-icon {
+    font-size: 80px;
+    animation: bounceIn 1s ease, pulse 2s infinite 1s;
+    display: inline-block;
+  }
+
+  @keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    60% { transform: scale(1.3); opacity: 1; }
+    100% { transform: scale(1); }
+  }
+
+  .opening-content h1 {
+    font-size: clamp(32px, 8vw, 70px);
+    margin: 20px 0 10px;
+    background: linear-gradient(90deg, #ff2d2d, #ff6b6b, #ff2d2d);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shine 3s linear infinite;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+
+  @keyframes shine {
+    to { background-position: 200% center; }
+  }
+
+  .opening-content .date-tag {
+    color: #ff6b6b;
+    font-size: clamp(14px, 3vw, 22px);
+    letter-spacing: 6px;
+    margin-bottom: 30px;
+    opacity: 0;
+    animation: fadeSlide 1s forwards 1.2s;
+  }
+
+  .opening-content .subtitle {
+    color: #ccc;
+    font-size: clamp(14px, 3vw, 18px);
+    max-width: 500px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+    opacity: 0;
+    animation: fadeSlide 1s forwards 1.8s;
+  }
+
+  @keyframes fadeSlide {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #enterBtn {
+    padding: 15px 60px;
+    font-size: 17px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #fff;
+    background: linear-gradient(135deg, #ff2d2d, #8b0000);
+    border: 2px solid #ff2d2d;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.4s;
+    box-shadow: 0 0 25px rgba(255,45,45,0.5);
+    opacity: 0;
+    animation: fadeSlide 1s forwards 2.5s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #enterBtn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.6s;
+  }
+
+  #enterBtn:hover::before { left: 100%; }
+
+  #enterBtn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 45px rgba(255,45,45,0.9);
+  }
+
+  .dots {
+    display: inline-flex;
+    gap: 6px;
+    margin-top: 25px;
+  }
+  .dots span {
+    width: 8px; height: 8px;
+    background: #ff2d2d;
+    border-radius: 50%;
+    animation: dotBounce 1.4s infinite ease-in-out;
+  }
+  .dots span:nth-child(2) { animation-delay: 0.2s; }
+  .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dotBounce {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+    40% { transform: scale(1.2); opacity: 1; }
+  }
+
+  /* ============ MAIN CONTENT ============ */
+  #mainContent {
+    display: none;
+    animation: fadeIn 1s ease;
+    position: relative;
+    z-index: 2;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: radial-gradient(circle at 50% 30%, #2a0000, #000 70%);
+    position: relative;
+    padding: 40px 20px;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,45,45,0.15), transparent 70%);
+    top: 10%; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  header .balloon {
+    position: absolute;
+    font-size: 40px;
+    animation: balloonFloat 8s ease-in-out infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes balloonFloat {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-30px) rotate(5deg); }
+  }
+
+  header h1.name {
+    font-size: clamp(40px, 12vw, 110px);
+    font-weight: 900;
+    background: linear-gradient(180deg, #ff4d4d, #8b0000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 60px rgba(255,45,45,0.4);
+    letter-spacing: 4px;
+    line-height: 1;
+    position: relative;
+    z-index: 2;
+  }
+
+  header .bday-text {
+    font-size: clamp(18px, 4vw, 32px);
+    color: #fff;
+    letter-spacing: 8px;
+    margin-top: 10px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 2;
+  }
+
+  header .date-line {
+    margin-top: 25px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+
+  .date-chip {
+    padding: 8px 20px;
+    border: 1px solid #ff2d2d;
+    border-radius: 30px;
+    color: #ff6b6b;
+    font-size: 14px;
+    letter-spacing: 2px;
+    background: rgba(255,45,45,0.08);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    color: #ff6b6b;
+    font-size: 13px;
+    letter-spacing: 3px;
+    animation: bounceDown 2s infinite;
+    z-index: 2;
+  }
+
+  @keyframes bounceDown {
+    0%, 100% { transform: translateY(0); opacity: 0.6; }
+    50% { transform: translateY(10px); opacity: 1; }
+  }
+
+  section {
+    padding: 70px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .section-title h2 {
+    font-size: clamp(26px, 5vw, 42px);
+    color: #fff;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 15px;
+  }
+
+  .section-title h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 3px;
+    background: linear-gradient(90deg, transparent, #ff2d2d, transparent);
+  }
+
+  .section-title p {
+    color: #999;
+    margin-top: 15px;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .photo-card {
+    background: #111;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #2a0000;
+    transition: all 0.4s;
+    position: relative;
+    aspect-ratio: 1 / 1;
+    cursor: pointer;
+  }
+
+  .photo-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    border-color: #ff2d2d;
+    box-shadow: 0 15px 40px rgba(255,45,45,0.35);
+  }
+
+  .photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .photo-card:hover img {
+    transform: scale(1.12);
+  }
+
+  .photo-card .overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(139,0,0,0.85), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    display: flex;
+    align-items: flex-end;
+    padding: 15px;
+  }
+
+  .photo-card:hover .overlay { opacity: 1; }
+
+  .overlay span {
+    color: #fff;
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .person-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+  }
+
+  .person-card {
+    background: linear-gradient(160deg, #1a0000, #000);
+    border-radius: 18px;
+    padding: 12px;
+    border: 2px solid #3a0000;
+    transition: all 0.4s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .person-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(255,45,45,0.3), transparent 30%);
+    animation: rotateBorder 4s linear infinite;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .person-card:hover::before { opacity: 1; }
+
+  @keyframes rotateBorder {
+    to { transform: rotate(360deg); }
+  }
+
+  .person-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 50px rgba(255,45,45,0.4);
+  }
+
+  .person-card .img-wrap {
+    border-radius: 12px;
+    overflow: hidden;
+    aspect-ratio: 3 / 4;
+    position: relative;
+    z-index: 2;
+  }
+
+  .person-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .person-card:hover img {
+    transform: scale(1.1);
+  }
+
+  .person-card .person-label {
+    text-align: center;
+    padding: 14px 0 6px;
+    color: #ff6b6b;
+    font-size: 13px;
+    letter-spacing: 2px;
+    position: relative;
+    z-index: 2;
+    font-weight: 600;
+  }
+
+  .message-box {
+    background: linear-gradient(145deg, #150000, #000);
+    border: 1px solid #3a0000;
+    border-radius: 20px;
+    padding: 50px 35px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .message-box::before {
+    content: '"';
+    position: absolute;
+    top: -20px; left: 20px;
+    font-size: 150px;
+    color: rgba(255,45,45,0.1);
+    font-family: Georgia, serif;
+  }
+
+  .message-box p {
+    font-size: clamp(15px, 2.5vw, 19px);
+    line-height: 1.9;
+    color: #ddd;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    font-style: italic;
+  }
+
+  .message-box .signature {
+    margin-top: 30px;
+    color: #ff2d2d;
+    font-size: 16px;
+    letter-spacing: 3px;
+    font-weight: bold;
+    position: relative;
+    z-index: 2;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid #1a0000;
+    color: #555;
+    font-size: 13px;
+    letter-spacing: 1px;
+  }
+
+  footer .heart {
+    color: #ff2d2d;
+    animation: pulse 1.5s infinite;
+    display: inline-block;
+  }
+
+  #lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
+    cursor: zoom-out;
+  }
+
+  #lightbox img {
+    max-width: 90%;
+    max-height: 85vh;
+    border-radius: 12px;
+    border: 2px solid #ff2d2d;
+    box-shadow: 0 0 60px rgba(255,45,45,0.5);
+    animation: zoomIn 0.3s ease;
+  }
+
+  @keyframes zoomIn {
+    from { transform: scale(0.7); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  #lightbox .close-lb {
+    position: absolute;
+    top: 25px; right: 35px;
+    font-size: 40px;
+    color: #ff2d2d;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  /* ============ MUSIC PLAYER ============ */
+  #musicPlayer {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(20,0,0,0.95), rgba(0,0,0,0.95));
+    border: 2px solid #ff2d2d;
+    border-radius: 50px;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1500;
+    box-shadow: 0 0 30px rgba(255,45,45,0.5);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    max-width: 95vw;
+  }
+
+  #musicPlayer.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  #musicPlayer .music-note {
+    font-size: 20px;
+    animation: pulse 1.5s infinite;
+    flex-shrink: 0;
+  }
+
+  .nav-arrow {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,45,45,0.15);
+    border: 1.5px solid #ff2d2d;
+    color: #ff6b6b;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s;
+    flex-shrink: 0;
+    user-select: none;
+    font-weight: bold;
+  }
+
+  .nav-arrow:hover {
+    background: #ff2d2d;
+    color: #fff;
+    transform: scale(1.1);
+  }
+
+  .nav-arrow:active {
+    transform: scale(0.95);
+  }
+
+  #songInfo {
+    flex: 1;
+    min-width: 0;
+    text-align: center;
+    padding: 0 8px;
+  }
+
+  #songTitle {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+
+  #songCounter {
+    color: #ff6b6b;
+    font-size: 10px;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+
+  #playPauseBtn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff2d2d, #8b0000);
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.25s;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(255,45,45,0.6);
+  }
+
+  #playPauseBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px rgba(255,45,45,0.9);
+  }
+
+  #volumeSlider {
+    width: 60px;
+    height: 4px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255,45,45,0.3);
+    border-radius: 2px;
+    outline: none;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  #volumeSlider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff2d2d;
+    cursor: pointer;
+    box-shadow: 0 0 8px rgba(255,45,45,0.8);
+  }
+
+  #volumeSlider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff2d2d;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 8px rgba(255,45,45,0.8);
+  }
+
+  @media (max-width: 600px) {
+    #musicPlayer {
+      padding: 8px 10px;
+      gap: 6px;
+      bottom: 12px;
+    }
+    #volumeSlider { display: none; }
+    #songTitle { font-size: 11px; max-width: 110px; }
+    .nav-arrow { width: 32px; height: 32px; font-size: 15px; }
+    #playPauseBtn { width: 36px; height: 36px; font-size: 14px; }
+    .music-note { font-size: 16px; }
+  }
+
+  @media (max-width: 500px) {
+    .pin-box { width: 50px; height: 60px; font-size: 26px; }
+    section { padding: 50px 15px; }
+    .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .person-grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PIN SCREEN ================= -->
+<div id="pinScreen">
+  <div class="lock-icon">🔒</div>
+  <h2>Private Birthday</h2>
+  <p class="hint">Masukkan kode PIN untuk membuka</p>
+  <div class="pin-input-wrap">
+    <input type="password" id="pinInput" class="pin-box" maxlength="1" inputmode="numeric" autocomplete="off" placeholder="•">
+  </div>
+  <button id="pinBtn">BUKA</button>
+  <div id="pinError"></div>
+</div>
+
+<!-- ================= OPENING SCREEN ================= -->
+<div id="openingScreen">
+  <div class="opening-content">
+    <div class="big-icon">🎉</div>
+    <h1>HAPPY BIRTHDAY</h1>
+    <div class="date-tag">06 · 11 · 2011</div>
+    <p class="subtitle">Sebuah perayaan kecil untuk momen yang besar.<br>Selamat menjelajahi kenangan indah.</p>
+    <button id="enterBtn">MASUK ✨</button>
+    <div class="dots">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MUSIC PLAYER ================= -->
+<div id="musicPlayer">
+  <span class="music-note">🎵</span>
+  <button class="nav-arrow" id="prevBtn" title="Lagu sebelumnya">&#9664;</button>
+  <div id="songInfo">
+    <div id="songTitle">Memuat lagu...</div>
+    <div id="songCounter">0 / 0</div>
+  </div>
+  <button id="playPauseBtn" title="Play/Pause">⏸</button>
+  <button class="nav-arrow" id="nextBtn" title="Lagu berikutnya">&#9654;</button>
+  <input type="range" id="volumeSlider" min="0" max="100" value="70" title="Volume">
+</div>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div id="mainContent">
+
+  <header>
+    <div class="balloon" style="top:12%; left:8%; animation-delay:0s;">🎈</div>
+    <div class="balloon" style="top:20%; right:10%; animation-delay:1.5s;">🎈</div>
+    <div class="balloon" style="top:60%; left:12%; animation-delay:0.8s;">🎈</div>
+    <div class="balloon" style="top:65%; right:8%; animation-delay:2.2s;">🎈</div>
+    
+    <h1 class="name">user</h1>
+    <div class="bday-text">Happy Birthday</div>
+    <div class="date-line">
+      <div class="date-chip">6 NOVEMBER 2011</div>
+      <div class="date-chip">🎂 SPECIAL DAY</div>
+    </div>
+    <div class="scroll-hint">↓ SCROLL KE BAWAH ↓</div>
+  </header>
+
+  <!-- 10 Foto Kenangan -->
+  <section>
+    <div class="section-title">
+      <h2>10 Foto Kenangan</h2>
+      <p>Momen-momen yang tak terlupakan</p>
+    </div>
+    <div class="gallery-grid" id="memoryGrid"></div>
+  </section>
+
+  <!-- 5 Foto Orangnya -->
+  <section>
+    <div class="section-title">
+      <h2>5 Foto Spesial</h2>
+      <p>Pesona di setiap sudut</p>
+    </div>
+    <div class="person-grid" id="personGrid"></div>
+  </section>
+
+  <!-- Pesan -->
+  <section>
+    <div class="message-box">
+      <p>Selamat ulang tahun! Teruslah bersinar seperti bintang di langit malam. Semoga setiap langkahmu dipenuhi kebahagiaan, setiap harimu penuh tawa, dan setiap impianmu menjadi kenyataan. Ini hari kamu — rayakanlah dengan penuh cinta!</p>
+      <div class="signature">— With Love, 06.11.2011 —</div>
+    </div>
+  </section>
+
+  <footer>
+    Dibuat dengan <span class="heart">❤</span> untuk momen spesial<br>
+    © 2011 - 6 November
+  </footer>
+</div>
+
+<!-- Lightbox -->
+<div id="lightbox">
+  <span class="close-lb">&times;</span>
+  <img id="lightboxImg" src="" alt="Preview">
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const CORRECT_PIN = "6";
+
+/* ================= PIN LOGIC ================= */
+const pinScreen = document.getElementById('pinScreen');
+const pinInput = document.getElementById('pinInput');
+const pinBtn = document.getElementById('pinBtn');
+const pinError = document.getElementById('pinError');
+const openingScreen = document.getElementById('openingScreen');
+
+function checkPin() {
+  if (pinInput.value === CORRECT_PIN) {
+    pinError.textContent = "";
+    pinScreen.style.opacity = '0';
+    setTimeout(() => {
+      pinScreen.style.display = 'none';
+      showOpening();
+    }, 600);
+  } else {
+    pinError.textContent = "Kode salah, coba lagi!";
+    pinInput.value = "";
+    pinInput.focus();
+    pinError.style.animation = 'none';
+    void pinError.offsetWidth;
+    pinError.style.animation = 'shake 0.4s';
+  }
+}
+
+pinBtn.addEventListener('click', checkPin);
+pinInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') checkPin();
+});
+pinInput.focus();
+
+/* ================= OPENING SCREEN ================= */
+function showOpening() {
+  openingScreen.style.display = 'flex';
+  createConfetti();
+  createFireworks();
+}
+
+function createConfetti() {
+  const colors = ['#ff2d2d', '#ff6b6b', '#8b0000', '#ff0000', '#ffffff', '#ff4d4d'];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random() * 10 + 5;
+    p.style.width = size + 'px';
+    p.style.height = size + 'px';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.bottom = '-20px';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.animationDuration = (Math.random() * 3 + 3) + 's';
+    p.style.animationDelay = (Math.random() * 3) + 's';
+    if (Math.random() > 0.5) p.style.borderRadius = '2px';
+    openingScreen.appendChild(p);
+  }
+}
+
+function createFireworks() {
+  const colors = ['#ff2d2d', '#ff6b6b', '#ff0000', '#ffffff'];
+  const positions = [
+    { top: '15%', left: '10%' },
+    { top: '20%', right: '10%' },
+    { top: '70%', left: '15%' },
+    { top: '65%', right: '12%' },
+    { top: '40%', left: '50%' }
+  ];
+  positions.forEach((pos, idx) => {
+    const fw = document.createElement('div');
+    fw.className = 'firework';
+    fw.style.borderColor = colors[idx % colors.length];
+    Object.assign(fw.style, pos);
+    fw.style.animationDelay = (idx * 0.4) + 's';
+    openingScreen.appendChild(fw);
+  });
+}
+
+/* ================= ENTER MAIN ================= */
+document.getElementById('enterBtn').addEventListener('click', () => {
+  openingScreen.style.opacity = '0';
+  openingScreen.style.transition = 'opacity 0.8s';
+  setTimeout(() => {
+    openingScreen.style.display = 'none';
+    document.getElementById('mainContent').style.display = 'block';
+    window.scrollTo(0, 0);
+    document.getElementById('musicPlayer').classList.add('visible');
+    startMusic();
+  }, 800);
+});
+
+/* =========================================================
+   MUSIC PLAYER — OTOMATIS DARI FOLDER "lagu" (via PHP)
+   ---------------------------------------------------------
+   Web memanggil lagu/list.php → PHP scan folder "lagu/"
+   dan kembalikan daftar file. Tidak ada daftar manual,
+   tidak ada batas jumlah. Tambah lagu = tinggal taruh file.
+========================================================= */
+const audio = new Audio();
+audio.volume = 0.7;
+audio.loop = false;
+audio.preload = 'auto';
+
+const songTitleEl = document.getElementById('songTitle');
+const songCounterEl = document.getElementById('songCounter');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+const volumeSlider = document.getElementById('volumeSlider');
+
+let playlist = [];
+let currentSongIndex = 0;
+let musicStarted = false;
+let isChangingTrack = false;
+
+function getSongTitle(filePath) {
+  let name = decodeURIComponent(filePath.split('/').pop());
+  name = name.replace(/\.[^/.]+$/, "");
+  return name.replace(/_/g, ' ').trim();
+}
+
+async function loadPlaylist() {
+  let files = [];
+  try {
+    const res = await fetch('lagu/list.php', { cache: 'no-store' });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        files = data;
+        console.log('✅ Lagu otomatis dari folder:', files.length, 'file');
+      }
+    }
+  } catch (err) {
+    console.warn('Gagal baca lagu/list.php:', err);
+  }
+  playlist = files.map(f => ({ title: getSongTitle(f), file: f }));
+}
+
+function updateUI() {
+  if (playlist.length === 0) {
+    songTitleEl.textContent = 'Tidak ada lagu di folder';
+    songCounterEl.textContent = '0 / 0';
+    return;
+  }
+  songTitleEl.textContent = playlist[currentSongIndex].title;
+  songCounterEl.textContent = (currentSongIndex + 1) + ' / ' + playlist.length;
+}
+
+function playSong(index) {
+  if (playlist.length === 0) return;
+  isChangingTrack = true;
+  currentSongIndex = (index + playlist.length) % playlist.length;
+  audio.src = playlist[currentSongIndex].file;
+  updateUI();
+  audio.play().then(() => updatePlayPauseIcon(true))
+    .catch(err => { console.warn('Play gagal:', err); updatePlayPauseIcon(false); })
+    .finally(() => setTimeout(() => { isChangingTrack = false; }, 600));
+}
+
+function startMusic() {
+  if (musicStarted) return;
+  musicStarted = true;
+  if (playlist.length > 0) playSong(0);
+  else {
+    songTitleEl.textContent = 'Tidak ada lagu di folder';
+    songCounterEl.textContent = '0 / 0';
+  }
+}
+
+function updatePlayPauseIcon(isPlaying) {
+  playPauseBtn.textContent = isPlaying ? '⏸' : '▶';
+}
+
+playPauseBtn.addEventListener('click', () => {
+  if (playlist.length === 0) return;
+  if (audio.paused) audio.play().then(() => updatePlayPauseIcon(true)).catch(()=>{});
+  else { audio.pause(); updatePlayPauseIcon(false); }
+});
+
+prevBtn.addEventListener('click', () => {
+  if (playlist.length === 0) return;
+  playSong(currentSongIndex - 1);
+});
+
+nextBtn.addEventListener('click', () => {
+  if (playlist.length === 0) return;
+  playSong(currentSongIndex + 1);
+});
+
+audio.addEventListener('ended', () => playSong(currentSongIndex + 1));
+audio.addEventListener('play', () => updatePlayPauseIcon(true));
+audio.addEventListener('pause', () => updatePlayPauseIcon(false));
+
+volumeSlider.addEventListener('input', e => { audio.volume = e.target.value / 100; });
+
+audio.addEventListener('error', () => {
+  if (isChangingTrack) return;
+  console.warn('File lagu error:', audio.src);
+  if (playlist.length > 1) setTimeout(() => playSong(currentSongIndex + 1), 400);
+  else songTitleEl.textContent = '⚠ File lagu tidak ditemukan';
+});
+
+document.addEventListener('keydown', e => {
+  if (!musicStarted) return;
+  if (e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowLeft') prevBtn.click();
+  else if (e.key === 'ArrowRight') nextBtn.click();
+  else if (e.key === ' ') { e.preventDefault(); playPauseBtn.click(); }
+});
+
+// Muat playlist dari PHP saat halaman dibuka
+loadPlaylist().then(() => updateUI());
+
+/* ================= PHOTO DATA ================= */
+const memoryPhotos = [
+  "foto-k1.jpg",
+  "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80",
+  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80",
+  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80",
+  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80",
+  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80",
+  "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=80",
+  "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&q=80",
+  "https://images.unsplash.com/photo-1496337589254-7e19d01cec44?w=600&q=80",
+  "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=600&q=80"
+];
+
+const memoryLabels = [
+  "Momen #1", "Momen #2", "Momen #3", "Momen #4", "Momen #5",
+  "Momen #6", "Momen #7", "Momen #8", "Momen #9", "Momen #10"
+];
+
+const personPhotos = [
+  "foto-a1.jpg",
+  "foto-a2.jpg",
+  "foto-a3.jpg",
+  "foto-a4.jpg",
+  "foto-a5.jpg"
+];
+
+const personLabels = [
+  "Foto 1", "Foto 2", "Foto 3", "Foto 4", "Foto 5"
+];
+
+/* ================= RENDER GALLERY ================= */
+const memoryGrid = document.getElementById('memoryGrid');
+memoryPhotos.forEach((src, i) => {
+  const card = document.createElement('div');
+  card.className = 'photo-card';
+  card.innerHTML = `
+    <img src="${src}" alt="${memoryLabels[i]}" loading="lazy" onerror="this.src='https://via.placeholder.com/600x600/111/ff2d2d?text=Foto+${i+1}'">
+    <div class="overlay"><span>${memoryLabels[i]}</span></div>
+  `;
+  card.addEventListener('click', () => openLightbox(src));
+  memoryGrid.appendChild(card);
+});
+
+const personGrid = document.getElementById('personGrid');
+personPhotos.forEach((src, i) => {
+  const card = document.createElement('div');
+  card.className = 'person-card';
+  card.innerHTML = `
+    <div class="img-wrap">
+      <img src="${src}" alt="${personLabels[i]}" loading="lazy" onerror="this.src='https://via.placeholder.com/600x800/111/ff2d2d?text=Foto+Orang+${i+1}'">
+    </div>
+    <div class="person-label">${personLabels[i]}</div>
+  `;
+  card.addEventListener('click', () => openLightbox(src));
+  personGrid.appendChild(card);
+});
+
+/* ================= LIGHTBOX ================= */
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+
+function openLightbox(src) {
+  lightboxImg.src = src;
+  lightbox.style.display = 'flex';
+}
+
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox || e.target.classList.contains('close-lb')) {
+    lightbox.style.display = 'none';
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') lightbox.style.display = 'none';
+});
+
+/* ================= SCROLL REVEAL ================= */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.photo-card, .person-card, .message-box').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+  observer.observe(el);
+});
+</script>
+</body>
+</html>
