@@ -14,25 +14,25 @@
     overflow-x: hidden;
   }
 
-  /* ============ BACKGROUND FIXED (FULL SCREEN) ============ */
+  /* ============ BACKGROUND FIXED (HP & LAPTOP) ============ */
   #bgImage {
     position: fixed; /* Kunci biar diam di tempat */
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
-    z-index: -2; /* Taruh paling belakang */
+    z-index: -2;
     
-    /* Settingan foto kamu */
+    /* Settingan foto */
     background-image: url('foto-a4.jpg');
     
-    /* KUNCI: Biar full menutupi layar dari atas sampai bawah */
+    /* KUNCI UNTUK HP & LAPTOP */
     background-size: cover; 
-    background-position: 53% 100%; 
+    background-position: center bottom; /* Fokus bagian bawah foto */
     background-repeat: no-repeat;
   }
 
-  /* Lapisan gelap di atas foto biar teks kebaca */
+  /* Lapisan gelap di atas foto biar teks & kartu kebaca */
   #bgOverlay {
     position: fixed;
     top: 0;
@@ -40,7 +40,7 @@
     width: 100%;
     height: 100vh;
     background: rgba(0, 0, 0, 0.75); /* Ubah 0.8 kalau mau lebih gelap */
-    z-index: -1; /* Di atas foto, di bawah konten */
+    z-index: -1;
     pointer-events: none;
   }
 
