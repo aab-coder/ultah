@@ -10,26 +10,35 @@
   body {
     font-family: 'Segoe UI', Tahoma, sans-serif;
     color: #fff;
-    overflow-x: hidden;
-    
-    /* ============ BACKGROUND UTAMA (FIXED) ============ */
     background-color: #000;
-    background-image: url('foto-a4.jpg');
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-position: 53% 100%;
-    
-    /* KUNCI: Biar background diam saat di-scroll */
-    background-attachment: fixed;
+    overflow-x: hidden;
   }
 
-  /* Lapisan overlay gelap di seluruh body biar tulisan & foto tetap jelas */
-  body::before {
-    content: '';
+  /* ============ BACKGROUND FIXED (ANTI LEPAS SAAT SCROLL) ============ */
+  #bgImage {
+    position: fixed; /* Kunci biar diam di tempat */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: -2; /* Taruh paling belakang */
+    
+    /* Settingan foto kamu */
+    background-image: url('foto-a4.jpg');
+    background-size: 100%;
+    background-position: 53% 100%;
+    background-repeat: no-repeat;
+  }
+
+  /* Lapisan gelap di atas foto biar teks kebaca */
+  #bgOverlay {
     position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75); /* Bisa diubah jadi 0.8 kalau mau lebih gelap */
-    z-index: -1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75); /* Ubah 0.8 kalau mau lebih gelap */
+    z-index: -1; /* Di atas foto, di bawah konten */
     pointer-events: none;
   }
 
@@ -299,19 +308,18 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: transparent; /* Dihapus background-nya karena sudah pindah ke body */
+    background: transparent;
     position: relative;
     padding: 40px 20px;
     overflow: hidden;
   }
 
-  /* Glow merah lembut di tengah */
   header::after {
     content: '';
     position: absolute;
     width: 700px;
     height: 700px;
-    background: radial-gradient(circle, rgba(255, 45, 45, 0.18), transparent 70%);
+    background: radial-gradient(circle, rgba(255, 45, 45, 0.15), transparent 70%);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -413,7 +421,7 @@
     position: relative;
     display: inline-block;
     padding-bottom: 15px;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.8); /* Biar makin jelas di atas foto */
+    text-shadow: 0 2px 10px rgba(0,0,0,0.8);
   }
 
   .section-title h2::after {
@@ -802,14 +810,6 @@
     .nav-arrow { width: 32px; height: 32px; font-size: 15px; }
     #playPauseBtn { width: 36px; height: 36px; font-size: 14px; }
     .music-note { font-size: 16px; }
-    
-    /* Fix untuk iOS/Safari yang sering nge-bug kalau background-attachment: fixed */
-    body { 
-      background-attachment: scroll; 
-    }
-    body::before {
-      position: absolute; /* Ubah overlay jadi absolute di HP */
-    }
   }
 
   @media (max-width: 500px) {
@@ -821,6 +821,10 @@
 </style>
 </head>
 <body>
+
+<!-- ============ BACKGROUND FIXED ============ -->
+<div id="bgImage"></div>
+<div id="bgOverlay"></div>
 
 <!-- ================= PIN SCREEN ================= -->
 <div id="pinScreen">
@@ -1010,8 +1014,7 @@ document.getElementById('enterBtn').addEventListener('click', () => {
 });
 
 /* =========================================================
-   MUSIC PLAYER — daftar lagu dari lagu/playlist.json
-========================================================= */
+   MUSIC PLAYER — daftar lagu dari lagu/playlist.json========================================================= */
 const audio = new Audio();
 audio.volume = 0.7;
 audio.loop = false;
