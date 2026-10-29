@@ -272,6 +272,7 @@
     to { opacity: 1; }
   }
 
+  /* ============ HEADER dengan background foto-a4.jpg ============ */
   header {
     min-height: 100vh;
     display: flex;
@@ -279,20 +280,43 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    background: radial-gradient(circle at 50% 30%, #2a0000, #000 70%);
+    background-image: url('foto-a4.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     position: relative;
     padding: 40px 20px;
     overflow: hidden;
   }
 
+  /* Overlay gelap merah-hitam supaya teks tetap terbaca */
   header::before {
     content: '';
     position: absolute;
-    width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(255,45,45,0.15), transparent 70%);
-    top: 10%; left: 50%;
-    transform: translateX(-50%);
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.75) 0%,
+      rgba(80, 0, 0, 0.65) 50%,
+      rgba(0, 0, 0, 0.85) 100%
+    );
     pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Glow merah lembut di tengah */
+  header::after {
+    content: '';
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(255, 45, 45, 0.18), transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 1;
   }
 
   header .balloon {
@@ -300,6 +324,7 @@
     font-size: 40px;
     animation: balloonFloat 8s ease-in-out infinite;
     opacity: 0.7;
+    z-index: 2;
   }
 
   @keyframes balloonFloat {
@@ -348,7 +373,8 @@
     color: #ff6b6b;
     font-size: 14px;
     letter-spacing: 2px;
-    background: rgba(255,45,45,0.08);
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
   }
 
   .scroll-hint {
@@ -766,6 +792,7 @@
     .nav-arrow { width: 32px; height: 32px; font-size: 15px; }
     #playPauseBtn { width: 36px; height: 36px; font-size: 14px; }
     .music-note { font-size: 16px; }
+    header { background-attachment: scroll; }
   }
 
   @media (max-width: 500px) {
@@ -826,7 +853,7 @@
     <div class="balloon" style="top:60%; left:12%; animation-delay:0.8s;">🎈</div>
     <div class="balloon" style="top:65%; right:8%; animation-delay:2.2s;">🎈</div>
     
-    <h1 class="name">Aisha</h1>
+    <h1 class="name">user</h1>
     <div class="bday-text">Happy Birthday</div>
     <div class="date-line">
       <div class="date-chip">6 NOVEMBER 2011</div>
@@ -1093,15 +1120,15 @@ loadPlaylist().then(() => updateUI());
 /* ================= PHOTO DATA ================= */
 const memoryPhotos = [
   "foto-k1.jpg",
-  "foto-k2.jpg",
-  "foto-k3.png",
-  "foto-k4.PNG",
-  "foto-k5.PNG",
-  "foto-k6.PNG",
-  "foto-k7.png",
-  "foto-k8.png",
-  "foto-k9.png",
-  "foto-k10.PNG"
+  "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80",
+  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80",
+  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80",
+  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80",
+  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80",
+  "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=80",
+  "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&q=80",
+  "https://images.unsplash.com/photo-1496337589254-7e19d01cec44?w=600&q=80",
+  "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=600&q=80"
 ];
 
 const memoryLabels = [
