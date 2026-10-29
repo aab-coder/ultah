@@ -14,7 +14,7 @@
     overflow-x: hidden;
   }
 
-  /* ============ BACKGROUND FIXED (ANTI LEPAS SAAT SCROLL) ============ */
+  /* ============ BACKGROUND FIXED (FULL SCREEN) ============ */
   #bgImage {
     position: fixed; /* Kunci biar diam di tempat */
     top: 0;
@@ -25,8 +25,10 @@
     
     /* Settingan foto kamu */
     background-image: url('foto-a4.jpg');
-    background-size: 100%;
-    background-position: 53% 100%;
+    
+    /* KUNCI: Biar full menutupi layar dari atas sampai bawah */
+    background-size: cover; 
+    background-position: 53% 100%; 
     background-repeat: no-repeat;
   }
 
