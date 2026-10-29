@@ -281,15 +281,15 @@
     justify-content: center;
     text-align: center;
     
-    /* Warna dasar kalau foto ga nutupin seluruh layar */
+    /* Warna dasar hitam untuk mengisi ruang kosong */
     background-color: #000; 
     
     background-image: url('foto-a4.jpg');
     background-repeat: no-repeat;
     
-    /* KUNCI UTAMANYA DI SINI: */
-    background-position: center center; /* Selalu pas di tengah */
-    background-size: 85%; /* Angka di bawah 100% bikin foto di-zoom out (menjauh). Bisa diganti jadi 80% atau 90% sesuai selera */
+    /* KUNCI UTAMANYA: */
+    background-position: center center; /* Posisi pas di tengah */
+    background-size: contain; /* Memaksa foto terlihat 100% utuh dari ujung ke ujung */
     
     background-attachment: fixed;
     position: relative;
@@ -802,7 +802,6 @@
     
     header { 
       background-attachment: scroll; 
-      background-size: 100%; /* Di HP agak disesuaikan */
     }
   }
 
