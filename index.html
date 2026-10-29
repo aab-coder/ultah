@@ -994,14 +994,6 @@ document.getElementById('enterBtn').addEventListener('click', () => {
 
 /* =========================================================
    MUSIC PLAYER — daftar lagu dari lagu/playlist.json
-   ---------------------------------------------------------
-   Edit file "lagu/playlist.json" setiap tambah lagu.
-   Contoh isi playlist.json:
-   [
-     "lagu/Lagu A.mp3",
-     "lagu/Lagu B.mp3",
-     "lagu/Lagu C.mp3"
-   ]
 ========================================================= */
 const audio = new Audio();
 audio.volume = 0.7;
@@ -1118,17 +1110,19 @@ document.addEventListener('keydown', e => {
 loadPlaylist().then(() => updateUI());
 
 /* ================= PHOTO DATA ================= */
+// Memperbaiki ekstensi yang berbeda-beda di GitHub kamu (.jpg dan .png)
+// Pastikan nama file di GitHub sama persis dengan yang di bawah ini.
 const memoryPhotos = [
   "foto-k1.jpg",
-  "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&q=80",
-  "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600&q=80",
-  "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&q=80",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&q=80",
-  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80",
-  "https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=80",
-  "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&q=80",
-  "https://images.unsplash.com/photo-1496337589254-7e19d01cec44?w=600&q=80",
-  "https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=600&q=80"
+  "foto-k2.jpg",
+  "foto-k3.png",
+  "foto-k4.png",
+  "foto-k5.png",
+  "foto-k6.png",
+  "foto-k7.png",
+  "foto-k8.png",
+  "foto-k9.png",
+  "foto-k10.png"
 ];
 
 const memoryLabels = [
