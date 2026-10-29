@@ -14,6 +14,63 @@
     overflow-x: hidden;
   }
 
+  /* ============ PANEL SETTINGAN (KHUSUS BUAT KAMU) ============ */
+  #settingsPanel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(20, 0, 0, 0.95);
+    border: 2px solid #ff2d2d;
+    border-radius: 12px;
+    padding: 15px;
+    z-index: 9999;
+    display: none; /* Disembunyikan default, buka pakai tombol gear */
+    flex-direction: column;
+    gap: 12px;
+    width: 250px;
+    box-shadow: 0 0 20px rgba(255, 45, 45, 0.5);
+    backdrop-filter: blur(10px);
+  }
+  #settingsPanel h3 {
+    font-size: 14px;
+    color: #ff6b6b;
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  #settingsPanel label {
+    font-size: 12px;
+    color: #ddd;
+    display: flex;
+    justify-content: space-between;
+  }
+  #settingsPanel input[type="range"] {
+    width: 100%;
+    accent-color: #ff2d2d;
+    cursor: pointer;
+  }
+  #toggleSettingsBtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #ff2d2d;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 10000;
+    box-shadow: 0 0 15px rgba(255, 45, 45, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+  }
+  #toggleSettingsBtn:hover {
+    transform: scale(1.1);
+  }
+
   /* ============ PIN SCREEN ============ */
   #pinScreen {
     position: fixed;
@@ -272,7 +329,7 @@
     to { opacity: 1; }
   }
 
-  /* ============ HEADER dengan background foto-a4.jpg ============ */
+  /* ============ HEADER ============ */
   header {
     min-height: 100vh;
     display: flex;
@@ -280,16 +337,13 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    
-    /* Warna dasar hitam untuk mengisi ruang kosong */
     background-color: #000; 
-    
     background-image: url('foto-a4.jpg');
     background-repeat: no-repeat;
     
-    /* KUNCI UTAMANYA: */
-    background-position: center center; /* Posisi pas di tengah */
-    background-size: contain; /* Memaksa foto terlihat 100% utuh dari ujung ke ujung */
+    /* NILAI AWAL (Bisa kamu ubah lewat panel settingan) */
+    background-size: 85%; /* Ukuran */
+    background-position: center 30%; /* Posisi */
     
     background-attachment: fixed;
     position: relative;
@@ -297,7 +351,7 @@
     overflow: hidden;
   }
 
-  /* Overlay gelap merah-hitam supaya teks tetap terbaca */
+  /* Overlay gelap merah-hitam */
   header::before {
     content: '';
     position: absolute;
@@ -815,6 +869,26 @@
 </head>
 <body>
 
+<!-- ================= TOMBOL & PANEL SETTINGAN ================= -->
+<button id="toggleSettingsBtn" title="Buka Settingan Foto">⚙️</button>
+
+<div id="settingsPanel">
+  <h3>Atur Background Foto</h3>
+  
+  <label>Ukuran (Zoom): <span id="valSize">85%</span></label>
+  <input type="range" id="bgSize" min="20" max="150" value="85">
+  
+  <label>Posisi Horizontal (X): <span id="valPosX">50%</span></label>
+  <input type="range" id="bgPosX" min="0" max="100" value="50">
+  
+  <label>Posisi Vertikal (Y): <span id="valPosY">30%</span></label>
+  <input type="range" id="bgPosY" min="0" max="100" value="30">
+  
+  <p style="font-size: 10px; color: #aaa; text-align: center; margin-top: 5px;">
+    *Geser sampai menurutmu pas, lalu kasih tahu saya angkanya!
+  </p>
+</div>
+
 <!-- ================= PIN SCREEN ================= -->
 <div id="pinScreen">
   <div class="lock-icon">🔒</div>
@@ -857,7 +931,7 @@
 <!-- ================= MAIN CONTENT ================= -->
 <div id="mainContent">
 
-  <header>
+  <header id="mainHeader">
     <div class="balloon" style="top:12%; left:8%; animation-delay:0s;">🎈</div>
     <div class="balloon" style="top:20%; right:10%; animation-delay:1.5s;">🎈</div>
     <div class="balloon" style="top:60%; left:12%; animation-delay:0.8s;">🎈</div>
@@ -911,10 +985,54 @@
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const CORRECT_PIN = "6";
+/* ================= LOGIKA PANEL SETTINGAN ================= */
+const toggleSettingsBtn = document.getElementById('toggleSettingsBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const mainHeader = document.getElementById('mainHeader');
+
+const bgSizeInput = document.getElementById('bgSize');
+const bgPosXInput = document.getElementById('bgPosX');
+const bgPosYInput = document.getElementById('bgPosY');
+
+const valSize = document.getElementById('valSize');
+const valPosX = document.getElementById('valPosX');
+const valPosY = document.getElementById('valPosY');
+
+// Buka/Tutup Panel
+toggleSettingsBtn.addEventListener('click', () => {
+  if (settingsPanel.style.display === 'flex') {
+    settingsPanel.style.display = 'none';
+  } else {
+    settingsPanel.style.display = 'flex';
+  }
+});
+
+// Fungsi Update Background
+function updateBackground() {
+  const size = bgSizeInput.value;
+  const posX = bgPosXInput.value;
+  const posY = bgPosYInput.value;
+
+  valSize.textContent = size + '%';
+  valPosX.textContent = posX + '%';
+  valPosY.textContent = posY + '%';
+
+  mainHeader.style.backgroundSize = size + '%';
+  mainHeader.style.backgroundPosition = posX + '% ' + posY + '%';
+}
+
+// Event Listener saat slider digeser
+bgSizeInput.addEventListener('input', updateBackground);
+bgPosXInput.addEventListener('input', updateBackground);
+bgPosYInput.addEventListener('input', updateBackground);
+
+// Panggil pertama kali untuk set nilai awal
+updateBackground();
+
 
 /* ================= PIN LOGIC ================= */
+const CORRECT_PIN = "6";
+
 const pinScreen = document.getElementById('pinScreen');
 const pinInput = document.getElementById('pinInput');
 const pinBtn = document.getElementById('pinBtn');
@@ -999,6 +1117,10 @@ document.getElementById('enterBtn').addEventListener('click', () => {
     window.scrollTo(0, 0);
     document.getElementById('musicPlayer').classList.add('visible');
     startMusic();
+    
+    // Otomatis buka panel settingan setelah masuk (biar kamu gampang atur)
+    settingsPanel.style.display = 'flex'; 
+    
   }, 800);
 });
 
