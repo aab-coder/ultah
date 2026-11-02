@@ -80,14 +80,31 @@
   /* =========================================
      CSS HALAMAN UTAMA
      ========================================= */
-  body { font-family: 'Segoe UI', Tahoma, sans-serif; color: #fff; background-color: #000; overflow-x: hidden; }
+  body { 
+    font-family: 'Segoe UI', Tahoma, sans-serif; 
+    color: #fff; 
+    background-color: #000; 
+    overflow-x: hidden; 
+    transition: background-color 0.8s ease; /* Transisi halus untuk bg black */
+  }
   
-  /* Sembunyikan halaman utama & hutan malam terlebih dahulu */
   #mainContent { display: none; }
   #openingScreen { display: none; }
 
-  #bgImage { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -2; background-image: url('foto-a4.jpg'); background-size: cover; background-position: center bottom; background-repeat: no-repeat; }
-  #bgOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.75); z-index: -1; pointer-events: none; }
+  /* Background Foto Aisha */
+  #bgImage { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: -3; background-image: url('foto-a4.jpg'); background-size: cover; background-position: center bottom; background-repeat: no-repeat; }
+  
+  /* Overlay Warna (Merah Darah <-> Soft Red) */
+  #bgOverlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; 
+    background-color: #8a0303; /* Warna awal: Merah Darah */
+    z-index: -2; 
+    pointer-events: none; 
+    transition: background-color 0.8s ease; /* KUNCI TRANSISI WARNA */
+  }
+  
+  /* Overlay Gelap (Tetap) */
+  #bgDark { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.7); z-index: -1; pointer-events: none; }
 
   /* ============ PIN SCREEN ============ */
   #pinScreen { position: fixed; inset: 0; background: radial-gradient(circle at 50% 50%, #1a0000, #000); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1000; transition: opacity 0.8s ease; }
@@ -216,14 +233,13 @@
   <div class="ground"></div>
   <div id="extras"></div>
 
-  <!-- Teks & Tombol di atas Hutan -->
   <div class="opening-text-wrap">
     <h1>Selamat Ulang Tahun Sayangg^^</h1>
     <button id="enterBtn">MASUK ✨</button>
   </div>
 </div>
 
-<!-- ================= 3. MUSIC PLAYER (Tampil saat halaman utama) ================= -->
+<!-- ================= 3. MUSIC PLAYER ================= -->
 <div id="musicPlayer">
   <span class="music-note">🎵</span>
   <button class="nav-arrow" id="prevBtn" title="Lagu sebelumnya">&#9664;</button>
@@ -240,6 +256,7 @@
 <div id="mainContent">
   <div id="bgImage"></div>
   <div id="bgOverlay"></div>
+  <div id="bgDark"></div>
 
   <header>
     <div class="balloon" style="top:12%; left:8%; animation-delay:0s;">🎈</div>
@@ -256,6 +273,7 @@
     <div class="scroll-hint">↓ SCROLL KE BAWAH ↓</div>
   </header>
 
+  <!-- 10 Foto Kenangan -->
   <section>
     <div class="section-title">
       <h2>10 Foto Kenangan</h2>
@@ -264,7 +282,8 @@
     <div class="gallery-grid" id="memoryGrid"></div>
   </section>
 
-  <section>
+  <!-- 5 Foto Spesial (Area Trigger Warna Soft Red) -->
+  <section id="specialPhotosSection">
     <div class="section-title">
       <h2>5 Foto Spesial</h2>
       <p>Pesona di setiap sudut</p>
@@ -272,6 +291,7 @@
     <div class="person-grid" id="personGrid"></div>
   </section>
 
+  <!-- Pesan -->
   <section>
     <div class="message-box">
       <p>Selamat ulang tahun! Teruslah bersinar seperti bintang di langit malam. Semoga setiap langkahmu dipenuhi kebahagiaan, setiap harimu penuh tawa, dan setiap impianmu menjadi kenyataan. Ini hari kamu — rayakanlah dengan penuh cinta!</p>
@@ -293,7 +313,7 @@
 
 <script>
 /* =========================================
-   1. LOGIKA PIN SCREEN (LANGKAH PERTAMA)
+   1. LOGIKA PIN SCREEN
    ========================================= */
 const CORRECT_PIN = "6";
 const pinScreen = document.getElementById('pinScreen');
@@ -308,14 +328,8 @@ function checkPin() {
     pinScreen.style.opacity = '0';
     setTimeout(() => {
       pinScreen.style.display = 'none';
-      
-      // Tampilkan Hutan Malam setelah PIN benar
       openingScreen.style.display = 'flex';
-      // Mulai animasi hutan
-      setTimeout(() => {
-        openingScreen.classList.remove('not-loaded');
-      }, 100);
-      
+      setTimeout(() => { openingScreen.classList.remove('not-loaded'); }, 100);
     }, 800);
   } else {
     pinError.textContent = "Kode salah, coba lagi!";
@@ -365,25 +379,41 @@ for (let i = 0; i < 6; i++) e += `<i class="shroom" style="--x:${f(r(6,90))}%;--
 for (let i = 0; i < 40; i++) e += `<i class="fly" style="--x:${f(r(3,96))}%;--y:${f(r(35,90))}%;--dx:${f(r(-8,8))}vmin;--dy:${f(r(4,12))}vmin;--dur:${f(r(6,12))}s;--d:${f(r(3,8))}s"></i>`;
 document.getElementById('extras').innerHTML = e;
 
-// Tombol MASUK di hutan
 document.getElementById('enterBtn').addEventListener('click', () => {
   openingScreen.style.opacity = '0';
   openingScreen.style.transform = 'scale(1.1)';
-  
   setTimeout(() => {
     openingScreen.style.display = 'none';
-    // Tampilkan Halaman Utama
     document.getElementById('mainContent').style.display = 'block';
     window.scrollTo(0, 0);
-    
-    // Tampilkan & mainkan musik
     document.getElementById('musicPlayer').classList.add('visible');
     startMusic();
   }, 1000);
 });
 
 /* =========================================
-   3. LOGIKA MUSIC PLAYER
+   3. LOGIKA TRANSISI WARNA SCROLL (Intersection Observer)
+   ========================================= */
+const specialSection = document.getElementById('specialPhotosSection');
+const bgOverlay = document.getElementById('bgOverlay');
+
+// Konfigurasi: warna akan berubah saat 50% area section terlihat di layar
+const colorObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Saat masuk area 5 Foto Spesial -> Soft Red
+      bgOverlay.style.backgroundColor = '#F47174';
+    } else {
+      // Saat keluar area (scroll menjauh) -> Kembali ke Merah Darah
+      bgOverlay.style.backgroundColor = '#8a0303';
+    }
+  });
+}, { threshold: 0.3 }); // 0.3 artinya 30% area section harus terlihat agar warna berubah
+
+colorObserver.observe(specialSection);
+
+/* =========================================
+   4. LOGIKA MUSIC PLAYER
    ========================================= */
 const audio = new Audio();
 audio.volume = 0.7;
@@ -415,7 +445,6 @@ async function loadPlaylist() {
     const data = await res.json();
     if (Array.isArray(data) && data.length > 0) {
       playlist = data.map(f => ({ title: getSongTitle(f), file: f }));
-      console.log('✅ Playlist dimuat:', playlist.length, 'lagu');
     }
   } catch (err) {
     console.warn('Gagal memuat playlist.json:', err);
@@ -496,11 +525,10 @@ document.addEventListener('keydown', e => {
   else if (e.key === ' ') { e.preventDefault(); playPauseBtn.click(); }
 });
 
-// Muat playlist saat halaman dibuka (background process)
 loadPlaylist().then(() => updateUI());
 
 /* =========================================
-   4. LOGIKA GALERI FOTO & LIGHTBOX
+   5. LOGIKA GALERI FOTO & LIGHTBOX
    ========================================= */
 const memoryPhotos = [
   "foto-k1.jpg", "foto-k2.jpg", "foto-k3.png", "foto-k4.PNG", "foto-k5.PNG",
@@ -565,7 +593,7 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* =========================================
-   5. ANIMASI SCROLL REVEAL
+   6. ANIMASI SCROLL REVEAL
    ========================================= */
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -584,4 +612,4 @@ document.querySelectorAll('.photo-card, .person-card, .message-box').forEach(el 
 });
 </script>
 </body>
-</html>
+ </html>
